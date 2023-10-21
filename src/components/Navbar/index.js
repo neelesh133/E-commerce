@@ -1,12 +1,35 @@
 "use client";
 
+import { adminNavOptions } from "@/utils";
 import { Fragment } from "react";
 
-const isAdminView = false;
-const isAuthUser = true;
+const isAdminView = true;
+const isAuthUser = false;
 const user = {
-  role: "admin",
+  role: "cus",
 };
+
+function NavItems() {
+  return (
+    <div
+      className="items-center justify-bertween w-full md:flex md:w-auto"
+      id="nav-items"
+    >
+      <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg md:flex-row md:space-x-8 md:mt-0 md:border-0 bg-white">
+        {isAdminView
+          ? adminNavOptions.map((item) => (
+              <li
+                className="cursor-pointer block py-2 pl-3 pr-4 text-gray-900 rounded md:p-0"
+                key={item.id}
+              >
+                {item.label}
+              </li>
+            ))
+          : null}
+      </ul>
+    </div>
+  );
+}
 
 export default function Navbar() {
   return (
@@ -32,7 +55,13 @@ export default function Navbar() {
                 <button className="text-black">Admin View</button>
               )
             ) : null}
+            {isAuthUser ? (
+              <button className="text-black">Logout</button>
+            ) : (
+              <button className="text-black">Login</button>
+            )}
           </div>
+          <NavItems/>
         </div>
       </nav>
     </>
