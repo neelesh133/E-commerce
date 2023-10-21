@@ -1,12 +1,12 @@
 "use client";
 
-import { adminNavOptions } from "@/utils";
+import { adminNavOptions, navOptions, styles } from "@/utils";
 import { Fragment } from "react";
 
 const isAdminView = true;
-const isAuthUser = false;
+const isAuthUser = true;
 const user = {
-  role: "cus",
+  role: "admin",
 };
 
 function NavItems() {
@@ -25,7 +25,14 @@ function NavItems() {
                 {item.label}
               </li>
             ))
-          : null}
+          : navOptions.map((item) => (
+              <li
+                className="cursor-pointer block py-2 pl-3 pr-4 text-gray-900 rounded md:p-0"
+                key={item.id}
+              >
+                {item.label}
+              </li>
+            ))}
       </ul>
     </div>
   );
@@ -44,24 +51,46 @@ export default function Navbar() {
           <div className="flex md:order-2 gap-2">
             {!isAdminView && isAuthUser ? (
               <Fragment>
-                <button className="text-black">Account</button>
-                <button className="text-black">Cart</button>
+                <button className={styles.button}>Account</button>
+                <button className={styles.button}>Cart</button>
               </Fragment>
             ) : null}
             {user?.role === "admin" ? (
               isAdminView ? (
-                <button className="text-black">Client View</button>
+                <button className={styles.button}>Client View</button>
               ) : (
-                <button className="text-black">Admin View</button>
+                <button className={styles.button}>Admin View</button>
               )
             ) : null}
             {isAuthUser ? (
-              <button className="text-black">Logout</button>
+              <button className={styles.button}>Logout</button>
             ) : (
-              <button className="text-black">Login</button>
+              <button className={styles.button}>Login</button>
             )}
+            <button
+              data-collapse-toggle="navbar-sticky"
+              type="button"
+              className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+              aria-controls="navbar-sticky"
+              aria-expanded="false"
+            >
+              <span className="sr-only">Open main menu</span>
+              <svg
+                className="w-6 h-6"
+                aria-hidden="true"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                  clipRule="evenodd"
+                ></path>
+              </svg>
+            </button>
           </div>
-          <NavItems/>
+          <NavItems />
         </div>
       </nav>
     </>
