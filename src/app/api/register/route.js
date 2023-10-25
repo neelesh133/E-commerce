@@ -24,9 +24,10 @@ export async function POST(req){
     if(error){
         return NextResponse.json({
             success: false,
-            message: email.details[0]
+            message: email.details[0].message
         })
     }
+
 
     try{
         //Check if user already exists
@@ -41,7 +42,7 @@ export async function POST(req){
         }
         else{
             const hashPassword = await hash(password, 12);
-            const newlyCreatedUser = await User.create({name,email,password,role})
+            const newlyCreatedUser = await User.create({name,email,hashPassword,role})
 
             if(newlyCreatedUser){
                 return NextResponse.json({
