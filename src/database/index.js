@@ -7,7 +7,7 @@ const configOptions = {
 
 const connectToDB = async () => {
   const connectionUrl =
-    "mongodb+srv://saxenaneelo122:nn5689nn@cluster0.imocjjb.mongodb.net/";
+    process.env.MONGO_URI;
 
   (await mongoose.connect(connectionUrl, configOptions))
     .then(() => {
