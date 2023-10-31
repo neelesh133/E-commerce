@@ -30,10 +30,7 @@ export async function POST(req) {
   }
 
   try {
-    // console.log("1")
     const checkUser = await User.findOne({ email });
-
-    // console.log("2")
 
     if (!checkUser) {
       return NextResponse.json({
@@ -76,7 +73,7 @@ export async function POST(req) {
       finalData,
     });
   } catch (error) {
-    console.log("Error in login user");
+    console.log("Error in logging user");
     return NextResponse.json({
       success: false,
       message: "Something went wrong! Please try agin later",
