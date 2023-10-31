@@ -1,11 +1,15 @@
 "use client";
 
 import InputComponent from "@/components/FormElements/InputComponent";
+import Spinner from "@/components/Spinner";
+import { GlobalContext } from "@/context";
 import { login } from "@/services/login";
 import { loginFormControls } from "@/utils";
+import { data } from "autoprefixer";
 import { func } from "joi";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import toast from "react-hot-toast";
 
 const initialFormData = {
   email: "",
@@ -13,6 +17,7 @@ const initialFormData = {
 };
 
 export default function Login() {
+  const { loader , setLoader } = useContext(GlobalContext);
   const [formData, setFormData] = useState(initialFormData);
 
   function isValidForm() {
@@ -26,7 +31,13 @@ export default function Login() {
   }
 
   async function handleLogin(){
+    setLoader(true);
     const res = await login(formData);
+    setLoader(false);
+    if(res.success) {
+      toast.success(res.message)
+    }
+    else toast.error(res.message)
   }
 
   const router = useRouter();
@@ -66,7 +77,7 @@ export default function Login() {
                   disabled={!isValidForm()}
                   onClick={handleLogin}
                 >
-                  Login
+                  {loader ? (<Spinner/>) : "Login"}
                 </button>
                 <div className="flex flex-col gap-2 w-full">
                   <p className="mt-8">New to Website?</p>
