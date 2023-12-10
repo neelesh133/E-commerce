@@ -1,8 +1,9 @@
 import React from "react";
 
-const Spinner = () => {
+const Spinner = ({text}) => {
   return (
     <div className="max-w-2xl mx-auto my-auto">
+      <span className="text-white mr-4">{text}</span>
       <svg
         role="status"
         className="inline h-8 w-8 animate-spin mr-2 text-gray-200 dark:text-gray-600 fill-gray-600 dark:fill-gray-300"

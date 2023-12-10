@@ -5,8 +5,6 @@ import Spinner from "@/components/Spinner";
 import { GlobalContext } from "@/context";
 import { login } from "@/services/login";
 import { loginFormControls } from "@/utils";
-import { data } from "autoprefixer";
-import { func } from "joi";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
@@ -18,7 +16,7 @@ const initialFormData = {
 };
 
 export default function Login() {
-  const { loader, setLoader } = useContext(GlobalContext);
+  const { pageLevelLoader, setPageLevelLoader } = useContext(GlobalContext);
   const [formData, setFormData] = useState(initialFormData);
   const { isAuthUser, setIsAuthUser, user, setUser } =
     useContext(GlobalContext);
@@ -33,27 +31,27 @@ export default function Login() {
   }
 
   async function handleLogin() {
-    setLoader(true);
+    setPageLevelLoader(true);
     const res = await login(formData);
-    setLoader(false);
+    setPageLevelLoader(false);
     if (res.success) {
       toast.success(res.message);
       setIsAuthUser(true);
       setUser(res?.finalData?.user);
       setFormData(initialFormData);
-      Cookies.set('token',res?.finalData?.token);
-      localStorage.setItem("user", JSON.stringify(res?.finalData?.user)); 
+      Cookies.set("token", res?.finalData?.token);
+      localStorage.setItem("user", JSON.stringify(res?.finalData?.user));
     } else {
       toast.error(res.message);
       setIsAuthUser(false);
     }
   }
 
-  console.log(isAuthUser , user);
+  // console.log(isAuthUser, user);
 
-  useEffect(()=> {
-    if(isAuthUser) router.push("/")
-  },[isAuthUser])
+  useEffect(() => {
+    if (isAuthUser) router.push("/");
+  }, [isAuthUser]);
 
   const router = useRouter();
   return (
@@ -92,7 +90,7 @@ export default function Login() {
                   disabled={!isValidForm()}
                   onClick={handleLogin}
                 >
-                  {loader ? <Spinner /> : "Login"}
+                  {pageLevelLoader ? <Spinner text="Logging In"/> : "Login"}
                 </button>
                 <div className="flex flex-col gap-2 w-full">
                   <p className="mt-8">New to Website?</p>

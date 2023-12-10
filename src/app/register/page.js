@@ -6,9 +6,9 @@ import Spinner from "@/components/Spinner";
 import { GlobalContext } from "@/context";
 import { registerNewUser } from "@/services/register";
 import { registrationFormControls } from "@/utils";
-import { useContext, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-
 
 const isRegistered = false;
 
@@ -20,19 +20,19 @@ const initialFormData = {
 };
 
 export default function Register() {
-  const { loader , setLoader } = useContext(GlobalContext);
+  const { pageLevelLoader, setPageLevelLoader } = useContext(GlobalContext);
+  const { isAuthUser } =
+    useContext(GlobalContext);
   const [formData, setFormData] = useState(initialFormData);
+  const router = useRouter();
 
   async function handleRegisterOnSubmit() {
-    setLoader(true);
+    setPageLevelLoader(true);
     const data = await registerNewUser(formData);
-    setLoader(false);
-    if(data.success) {
-      toast.success("User registered successfully")
-    }
-    else toast.error(data.message)
-
-    // console.log(data.success);
+    setPageLevelLoader(false);
+    if (data.success) {
+      toast.success("User registered successfully");
+    } else toast.error(data.message);
   }
 
   function isFormValid() {
@@ -46,6 +46,10 @@ export default function Register() {
       ? true
       : false;
   }
+
+  useEffect(() => {
+    if (isAuthUser) router.push("/");
+  }, [isAuthUser]);
 
   return (
     <div className="bg-white relative">
@@ -103,7 +107,7 @@ export default function Register() {
                   disabled={!isFormValid()}
                   onClick={handleRegisterOnSubmit}
                 >
-                  {loader ? (<Spinner/>) : "Register"}
+                  {pageLevelLoader ? <Spinner text="Registering"/> : "Register"}
                 </button>
               ) : null}
             </div>

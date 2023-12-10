@@ -7,10 +7,10 @@ import { useContext } from "react";
 export default function Home() {
   const {isAuthUser} = useContext(GlobalContext);
 
-  console.log(isAuthUser);
+  // console.log(isAuthUser);
   return (
     <>
-      <div className="z-10">HEEELOasdasdadad</div>
+      <div className="mb-0 h-full">SHOPPING</div>
     </>
   );
 }

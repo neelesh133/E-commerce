@@ -19,7 +19,7 @@ export default function RootLayout({ children }) {
       <body className={`${inter.className}`}>
         <GlobalState>
           <Toaster position="top-right" reverseOrder={false} />
-          <main className="flex min-h-screen flex-col gap-2 z-10">
+          <main className="flex min-h-screen flex-col gap-2">
           <Navbar/>{children}</main>
         </GlobalState>
       </body>

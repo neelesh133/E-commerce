@@ -1,6 +1,6 @@
 export default function InputComponent({ label, placeholder, type, onChange }) {
   return (
-    <div className="relative">
+    <div className="relative mt-3 mb-3">
       <p className="absolute bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600">
         {label}
       </p>
