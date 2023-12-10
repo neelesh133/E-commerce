@@ -8,7 +8,7 @@ export const login = async (formData) => {
       body: JSON.stringify(formData),
     });
 
-    const data = res.json();
+    const data = await res.json();
 
     return data;
   } catch (error) {

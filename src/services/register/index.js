@@ -9,7 +9,7 @@ export const registerNewUser = async (formData) => {
     });
 
     // console.log(response);
-    
+
     const finalData = await response.json();
 
     return finalData;
