@@ -7,8 +7,9 @@ import { login } from "@/services/login";
 import { loginFormControls } from "@/utils";
 import { data } from "autoprefixer";
 import { func } from "joi";
+import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 const initialFormData = {
@@ -17,9 +18,10 @@ const initialFormData = {
 };
 
 export default function Login() {
-  const { loader , setLoader } = useContext(GlobalContext);
+  const { loader, setLoader } = useContext(GlobalContext);
   const [formData, setFormData] = useState(initialFormData);
-
+  const { isAuthUser, setIsAuthUser, user, setUser } =
+    useContext(GlobalContext);
   function isValidForm() {
     return formData &&
       formData.email &&
@@ -30,21 +32,34 @@ export default function Login() {
       : false;
   }
 
-  async function handleLogin(){
+  async function handleLogin() {
     setLoader(true);
     const res = await login(formData);
     setLoader(false);
-    if(res.success) {
-      toast.success(res.message)
+    if (res.success) {
+      toast.success(res.message);
+      setIsAuthUser(true);
+      setUser(res?.finalData?.user);
+      setFormData(initialFormData);
+      Cookies.set('token',res?.finalData?.token);
+      localStorage.setItem("user", JSON.stringify(res?.finalData?.user)); 
+    } else {
+      toast.error(res.message);
+      setIsAuthUser(false);
     }
-    else toast.error(res.message)
   }
+
+  console.log(isAuthUser , user);
+
+  useEffect(()=> {
+    if(isAuthUser) router.push("/")
+  },[isAuthUser])
 
   const router = useRouter();
   return (
     <>
       {/* <Spinner/> */}
-      <div className="bg-white relative mt-16">
+      <div className="bg-white relative">
         <div className="flex flex-col items-center justify-betweenpt-0 pr-10 pb-0 pl-10 mt-8 mr-auto xl:px-5 lg:flex-row">
           <div className="flex flex-col justify-center items-center w-full pr-10 pl-10 lg:flex-row">
             <div className="w-full mt-20 mr-0 mb-0 ml-0 relative max-w-2xl lg:mt-0 lg:w-5/12">
@@ -77,7 +92,7 @@ export default function Login() {
                   disabled={!isValidForm()}
                   onClick={handleLogin}
                 >
-                  {loader ? (<Spinner/>) : "Login"}
+                  {loader ? <Spinner /> : "Login"}
                 </button>
                 <div className="flex flex-col gap-2 w-full">
                   <p className="mt-8">New to Website?</p>

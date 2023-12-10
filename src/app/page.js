@@ -1,10 +1,10 @@
-
+"use client"
 
 //page
 export default function Home() {
   return (
     <>
-      <h1>HEEELO</h1>
+      <div className="z-10">HEEELOasdasdadad</div>
     </>
   );
 }
