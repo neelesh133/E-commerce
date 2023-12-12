@@ -18,7 +18,7 @@ const initialFormData = {
 export default function Login() {
   const { pageLevelLoader, setPageLevelLoader } = useContext(GlobalContext);
   const [formData, setFormData] = useState(initialFormData);
-  const { isAuthUser, setIsAuthUser, user, setUser } =
+  const { isAuthUser, setIsAuthUser,setUser } =
     useContext(GlobalContext);
   function isValidForm() {
     return formData &&
