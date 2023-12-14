@@ -68,25 +68,30 @@ const initialFormData = {
 
 export default function AdminView() {
   const { pageLevelLoader, setPageLevelLoader } = useContext(GlobalContext);
-  const  [uploadState, setUploadState]  = useState(false);
+  const [uploadState, setUploadState] = useState(false);
   const [formData, setFormData] = useState(initialFormData);
   const refImage = useRef(null);
 
   const handleImage = async () => {
     // console.log(refImage.current.files);
-    setPageLevelLoader(true);
-    const extractImageUrl = await helperForUploadingImageToFirebase(
-      refImage.current.files[0]
-    );
-    // console.log(extractImageUrl);
-    if (extractImageUrl !== "") {
-      setFormData({
-        ...formData,
-        imageUrl: extractImageUrl,
-      });
+    try {
+      setPageLevelLoader(true);
+      const extractImageUrl = await helperForUploadingImageToFirebase(
+        refImage.current.files[0]
+      );
+      // console.log(extractImageUrl);
+      if (extractImageUrl !== "") {
+        setFormData({
+          ...formData,
+          imageUrl: extractImageUrl,
+        });
+        setUploadState(true);
+      }
+      setPageLevelLoader(false);
+      toast.success("Image Uploaded Successfully.")
+    } catch {
+      toast.error("Something went wrong. Please try again.")
     }
-    setPageLevelLoader(false);
-    setUploadState(true);
   };
 
   function handleTileClick(getCurrentItem) {
@@ -109,6 +114,7 @@ export default function AdminView() {
     setPageLevelLoader(true);
     const res = await addNewProduct(formData);
     setPageLevelLoader(false);
+    setUploadState(false);
     if (res.success) {
       toast.success(res.message);
     } else {
@@ -125,16 +131,20 @@ export default function AdminView() {
           <input type="file" accept="image/*" max="1000000" ref={refImage} />
           <button
             onClick={handleImage}
-            className={`h-10 w-48 ${uploadState ?`bg-slate-800`:`bg-black`} text-md text-white font-medium rounded-md`}
-            disabled={(uploadState)}
+            className={`h-10 w-48 ${
+              uploadState ? `bg-slate-800` : `bg-black`
+            } text-md text-white font-medium rounded-md`}
+            disabled={uploadState}
           >
-            {(!uploadState) ? (
+            {!uploadState ? (
               pageLevelLoader ? (
                 <Spinner text="Uploading" />
               ) : (
                 "Upload"
               )
-            ) : `Uploaded`}
+            ) : (
+              `Uploaded`
+            )}
           </button>
           <div className="flex gap-2 flex-col">
             <label htmlFor="">Available Sizes</label>
