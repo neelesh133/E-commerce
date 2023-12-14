@@ -19,8 +19,7 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
-import Cookies from "js-cookie";
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
 const app = initializeApp(firebaseConfig);
@@ -69,20 +68,25 @@ const initialFormData = {
 
 export default function AdminView() {
   const { pageLevelLoader, setPageLevelLoader } = useContext(GlobalContext);
+  const  [uploadState, setUploadState]  = useState(false);
   const [formData, setFormData] = useState(initialFormData);
-  const handleImage = async (e) => {
-    // console.log(e.target.files);
+  const refImage = useRef(null);
+
+  const handleImage = async () => {
+    // console.log(refImage.current.files);
+    setPageLevelLoader(true);
     const extractImageUrl = await helperForUploadingImageToFirebase(
-      e.target.files[0]
+      refImage.current.files[0]
     );
     // console.log(extractImageUrl);
-
     if (extractImageUrl !== "") {
       setFormData({
         ...formData,
         imageUrl: extractImageUrl,
       });
     }
+    setPageLevelLoader(false);
+    setUploadState(true);
   };
 
   function handleTileClick(getCurrentItem) {
@@ -113,17 +117,25 @@ export default function AdminView() {
 
     // console.log(res);
   };
-// console.log(Cookies.get('token') !== undefined);
+
   return (
     <div className="w-full mt-5 mr-0 mb-0 ml-0 relative">
       <div className="flex flex-col items-start justify-start p-10 bg-white shadow-2xl rounded-xl relative">
         <div className="w-full mt-6 mr-0 mb-0 ml-0 space-y-8">
-          <input
-            type="file"
-            accept="image/*"
-            max="1000000"
-            onChange={handleImage}
-          />
+          <input type="file" accept="image/*" max="1000000" ref={refImage} />
+          <button
+            onClick={handleImage}
+            className={`h-10 w-48 ${uploadState ?`bg-slate-800`:`bg-black`} text-md text-white font-medium rounded-md`}
+            disabled={(uploadState)}
+          >
+            {(!uploadState) ? (
+              pageLevelLoader ? (
+                <Spinner text="Uploading" />
+              ) : (
+                "Upload"
+              )
+            ) : `Uploaded`}
+          </button>
           <div className="flex gap-2 flex-col">
             <label htmlFor="">Available Sizes</label>
             <TileComponent
@@ -165,7 +177,11 @@ export default function AdminView() {
               onClick={handleAddProduct}
               className="inline-flex w-full items-center justify-center bg-black px-6 py-4 text-lg text-white font-medium uppercase tracking-wide"
             >
-              {pageLevelLoader ? <Spinner text="Adding Product" /> : "ADD PRODUCT"}
+              {pageLevelLoader ? (
+                <Spinner text="Adding Product" />
+              ) : (
+                "ADD PRODUCT"
+              )}
             </button>
           </div>
         </div>

@@ -3,6 +3,7 @@ import Product from "@/models/product";
 import Joi from "joi";
 import Cookies from "js-cookie";
 import { NextResponse } from "next/server";
+import { cookies } from 'next/headers'
 
 const AddNewProductSchema = Joi.object({
   name: Joi.string().required(),
@@ -21,9 +22,9 @@ export const dynamic = "force-dynamic";
 export async function POST(req) {
   try {
     await connectToDB();
-    // console.log(typeof Cookies.get("token"));
-    if (typeof Cookies.get("token") !== 'undefined') {
-      console.log("if");
+    const cookieStore = cookies()
+    const token = cookieStore.get('token')
+    if (typeof(token) !== 'undefined') {
 
       const user = "admin";
       if (user === "admin") {
