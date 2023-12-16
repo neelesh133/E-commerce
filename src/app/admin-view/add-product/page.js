@@ -19,6 +19,7 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
+import { useRouter } from "next/navigation";
 import { useContext, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -71,6 +72,7 @@ export default function AdminView() {
   const [uploadState, setUploadState] = useState(false);
   const [formData, setFormData] = useState(initialFormData);
   const refImage = useRef(null);
+  const router = useRouter();
 
   const handleImage = async () => {
     // console.log(refImage.current.files);
@@ -88,9 +90,9 @@ export default function AdminView() {
         setUploadState(true);
       }
       setPageLevelLoader(false);
-      toast.success("Image Uploaded Successfully.")
+      toast.success("Image Uploaded Successfully.");
     } catch {
-      toast.error("Something went wrong. Please try again.")
+      toast.error("Something went wrong. Please try again.");
     }
   };
 
@@ -120,6 +122,10 @@ export default function AdminView() {
     } else {
       toast.error(res.message);
     }
+    setFormData(initialFormData);
+    setTimeout(()=>{
+      router.push('admin-view/all-products');
+    },1500)
 
     // console.log(res);
   };
