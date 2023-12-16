@@ -22,9 +22,10 @@ export const dynamic = "force-dynamic";
 export async function POST(req) {
   try {
     await connectToDB();
-    const cookieStore = cookies()
-    const token = cookieStore.get('token')
-    if (typeof(token) !== 'undefined') {
+    //Imp..
+    // const cookieStore = cookies()
+    // const token = cookieStore.get('token')
+  
 
       const user = "admin";
       if (user === "admin") {
@@ -78,12 +79,6 @@ export async function POST(req) {
           message: "You are not authorized.",
         });
       }
-    } else {
-      return NextResponse.json({
-        success: false,
-        message: "Please Login",
-      });
-    }
   } catch (error) {
     console.log(error);
     return NextResponse.json({
