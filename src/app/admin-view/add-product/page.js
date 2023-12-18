@@ -124,7 +124,7 @@ export default function AdminView() {
     }
     setFormData(initialFormData);
     setTimeout(()=>{
-      router.push('admin-view/all-products');
+      router.push('/admin-view/all-products');
     },1500)
 
     // console.log(res);
