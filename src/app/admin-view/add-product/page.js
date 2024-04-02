@@ -5,7 +5,7 @@ import SelectComponent from "@/components/FormElements/SelectComponent";
 import TileComponent from "@/components/FormElements/TileComponent";
 import Spinner from "@/components/Spinner";
 import { GlobalContext } from "@/context";
-import { addNewProduct } from "@/services/product";
+import { addNewProduct, updateAProduct } from "@/services/product";
 import {
   AvailableSizes,
   adminAddProductformControls,
@@ -20,7 +20,7 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { useRouter } from "next/navigation";
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
 const app = initializeApp(firebaseConfig);
@@ -68,14 +68,23 @@ const initialFormData = {
 };
 
 export default function AdminView() {
-  const { pageLevelLoader, setPageLevelLoader } = useContext(GlobalContext);
+  const {
+    pageLevelLoader,
+    setPageLevelLoader,
+    currentUpdatedProduct,
+    setCurrentUpdatedProduct,
+  } = useContext(GlobalContext);
   const [uploadState, setUploadState] = useState(false);
   const [formData, setFormData] = useState(initialFormData);
   const refImage = useRef(null);
   const router = useRouter();
 
+  useEffect(() => {
+    if (currentUpdatedProduct !== null) setFormData(currentUpdatedProduct);
+  }, [currentUpdatedProduct]);
+  console.log(formData);
+
   const handleImage = async () => {
-    // console.log(refImage.current.files);
     try {
       setPageLevelLoader(true);
       const extractImageUrl = await helperForUploadingImageToFirebase(
@@ -114,7 +123,10 @@ export default function AdminView() {
 
   const handleAddProduct = async () => {
     setPageLevelLoader(true);
-    const res = await addNewProduct(formData);
+    const res =
+      currentUpdatedProduct !== null
+        ? await updateAProduct(formData)
+        : await addNewProduct(formData);
     setPageLevelLoader(false);
     setUploadState(false);
     if (res.success) {
@@ -123,11 +135,9 @@ export default function AdminView() {
       toast.error(res.message);
     }
     setFormData(initialFormData);
-    setTimeout(()=>{
-      router.push('/admin-view/all-products');
-    },1500)
-
-    // console.log(res);
+    setTimeout(() => {
+      router.push("/admin-view/all-products");
+    }, 1500);
   };
 
   return (
@@ -165,8 +175,8 @@ export default function AdminView() {
                   type={controlItem.type}
                   placeholder={controlItem.placeholder}
                   label={controlItem.label}
-                  key={controlItem.id}
                   value={formData[controlItem.id]}
+                  key={controlItem.id}
                   onChange={(event) => {
                     setFormData({
                       ...formData,
@@ -194,9 +204,9 @@ export default function AdminView() {
               className="inline-flex w-full items-center justify-center bg-black px-6 py-4 text-lg text-white font-medium uppercase tracking-wide"
             >
               {pageLevelLoader ? (
-                <Spinner text="Adding Product" />
+                <Spinner text={currentUpdatedProduct !== null ? "Updating Product" : "Adding Product"} />
               ) : (
-                "ADD PRODUCT"
+                currentUpdatedProduct !== null ? "UPDATE PRODUCT" : "ADD PRODUCT" 
               )}
             </button>
           </div>
