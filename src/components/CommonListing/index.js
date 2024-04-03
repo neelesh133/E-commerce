@@ -24,7 +24,7 @@ export default function CommonListing({data}) {
                   key={item._id}
                 >
                   <ProductTile item={item} />
-                  <ProductButton item={item} />
+                  <ProductButton item={item}/>
                 </article>
               ))
             : null}

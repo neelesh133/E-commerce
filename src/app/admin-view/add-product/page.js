@@ -86,7 +86,7 @@ export default function AdminView() {
 
   const handleImage = async () => {
     try {
-      setPageLevelLoader(true);
+      setPageLevelLoader({loading:true,type:"img"});
       const extractImageUrl = await helperForUploadingImageToFirebase(
         refImage.current.files[0]
       );
@@ -98,10 +98,11 @@ export default function AdminView() {
         });
         setUploadState(true);
       }
-      setPageLevelLoader(false);
+      setPageLevelLoader({loading:false,type:""});
       toast.success("Image Uploaded Successfully.");
     } catch {
       toast.error("Something went wrong. Please try again.");
+      setPageLevelLoader({loading:false,type:""});
     }
   };
 
@@ -122,22 +123,22 @@ export default function AdminView() {
   }
 
   const handleAddProduct = async () => {
-    setPageLevelLoader(true);
+    setPageLevelLoader({loading:true,type:"add"});
     const res =
       currentUpdatedProduct !== null
         ? await updateAProduct(formData)
         : await addNewProduct(formData);
-    setPageLevelLoader(false);
+    setPageLevelLoader({loading:false,type:""});
     setUploadState(false);
     if (res.success) {
       toast.success(res.message);
+      setFormData(initialFormData);
+      setTimeout(() => {
+        router.push("/admin-view/all-products");
+      }, 1500);
     } else {
       toast.error(res.message);
     }
-    setFormData(initialFormData);
-    setTimeout(() => {
-      router.push("/admin-view/all-products");
-    }, 1500);
   };
 
   return (
@@ -153,7 +154,7 @@ export default function AdminView() {
             disabled={uploadState}
           >
             {!uploadState ? (
-              pageLevelLoader ? (
+              (pageLevelLoader.loading && pageLevelLoader.type==="img") ? (
                 <Spinner text="Uploading" />
               ) : (
                 "Upload"
@@ -203,7 +204,7 @@ export default function AdminView() {
               onClick={handleAddProduct}
               className="inline-flex w-full items-center justify-center bg-black px-6 py-4 text-lg text-white font-medium uppercase tracking-wide"
             >
-              {pageLevelLoader ? (
+              {(pageLevelLoader.loading && pageLevelLoader.type==="add") ? (
                 <Spinner text={currentUpdatedProduct !== null ? "Updating Product" : "Adding Product"} />
               ) : (
                 currentUpdatedProduct !== null ? "UPDATE PRODUCT" : "ADD PRODUCT" 
