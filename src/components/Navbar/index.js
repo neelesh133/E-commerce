@@ -34,6 +34,7 @@ function NavItems({ isModalView = false, isAdminView,router }) {
               <li
                 className="cursor-pointer block py-2 pl-3 pr-4 text-gray-900 rounded md:p-0"
                 key={item.id}
+                onClick={()=>{router.push(item.path)}}
               >
                 {item.label}
               </li>

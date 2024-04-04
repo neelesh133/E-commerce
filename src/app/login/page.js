@@ -31,9 +31,9 @@ export default function Login() {
   }
 
   async function handleLogin() {
-    setPageLevelLoader(true);
+    setPageLevelLoader({loading:true,type:"login"});
     const res = await login(formData);
-    setPageLevelLoader(false);
+    setPageLevelLoader({loading:false,type:""});
     if (res.success) {
       toast.success(res.message);
       setIsAuthUser(true);
@@ -90,7 +90,7 @@ export default function Login() {
                   disabled={!isValidForm()}
                   onClick={handleLogin}
                 >
-                  {pageLevelLoader ? <Spinner text="Logging In"/> : "Login"}
+                  {(pageLevelLoader.loading && pageLevelLoader.type === "login")? <Spinner text="Logging In"/> : "Login"}
                 </button>
                 <div className="flex flex-col gap-2 w-full">
                   <p className="mt-8">New to Website?</p>
