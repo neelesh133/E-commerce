@@ -16,14 +16,14 @@ export async function GET(req){
         if(data){
             return NextResponse.json({
                 success: true,
-                data,
+                data : data,
               });
         }
         else{
             return NextResponse.json({
                 success: true,
                 message: "No Products Found !",
-              }).status(204)
+              }, { status: 204 })
         }
     } catch (error) {
         console.log(error);
