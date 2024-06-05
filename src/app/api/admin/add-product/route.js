@@ -1,9 +1,8 @@
 import connectToDB from "@/database";
 import Product from "@/models/product";
 import Joi from "joi";
-import Cookies from "js-cookie";
 import { NextResponse } from "next/server";
-import { cookies } from 'next/headers'
+import authUser from "@/middleware/authUser";
 
 const AddNewProductSchema = Joi.object({
   name: Joi.string().required(),
@@ -25,10 +24,11 @@ export async function POST(req) {
     //Imp..
     // const cookieStore = cookies()
     // const token = cookieStore.get('token')
-  
 
-      const user = "admin";
-      if (user === "admin") {
+      const isAuthUser = await authUser(req);
+
+      
+      if (isAuthUser?.role === "admin") {
         const extractData = await req.json();
         const {
           name,
